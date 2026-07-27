@@ -1,0 +1,83 @@
+import { Folder, LinkItem } from "./types";
+
+export const folders: Folder[] = [
+  { id: "dev", name: "개발", count: 8 },
+  { id: "design", name: "디자인", count: 4 },
+  { id: "reading", name: "읽을거리", count: 5 },
+  { id: "etc", name: "기타", count: 2 },
+];
+
+export const links: LinkItem[] = [
+  {
+    id: "1",
+    title: "Next.js Documentation",
+    url: "https://nextjs.org/docs",
+    description: "Next.js 공식 문서에서 최신 기능과 API를 확인해보세요.",
+    thumbnailUrl: "https://picsum.photos/seed/nextjs/480/270",
+    folderId: "dev",
+    createdAt: "2026-07-20",
+  },
+  {
+    id: "2",
+    title: "MDN Web Docs",
+    url: "https://developer.mozilla.org",
+    description: "웹 표준 기술에 대한 가장 신뢰할 수 있는 레퍼런스입니다.",
+    thumbnailUrl: "https://picsum.photos/seed/mdn/480/270",
+    folderId: "dev",
+    createdAt: "2026-07-19",
+  },
+  {
+    id: "3",
+    title: "Refactoring UI",
+    url: "https://www.refactoringui.com",
+    description: "개발자를 위한 실용적인 UI 디자인 가이드북입니다.",
+    thumbnailUrl: "https://picsum.photos/seed/refactoring/480/270",
+    folderId: "design",
+    createdAt: "2026-07-18",
+  },
+  {
+    id: "4",
+    title: "타입스크립트 핸드북",
+    url: "https://www.typescriptlang.org/docs/handbook",
+    description: "타입스크립트의 기초부터 고급 타입까지 정리된 공식 핸드북.",
+    thumbnailUrl: "https://picsum.photos/seed/ts/480/270",
+    folderId: "dev",
+    createdAt: "2026-07-17",
+  },
+  {
+    id: "5",
+    title: "Dribbble",
+    url: "https://dribbble.com",
+    description: "전 세계 디자이너들의 영감을 얻을 수 있는 포트폴리오 플랫폼.",
+    thumbnailUrl: "https://picsum.photos/seed/dribbble/480/270",
+    folderId: "design",
+    createdAt: "2026-07-16",
+  },
+  {
+    id: "6",
+    title: "이번 주 읽은 아티클",
+    url: "https://example.com/weekly-read",
+    description: "생산성과 커리어에 대한 짧은 에세이 모음입니다.",
+    thumbnailUrl: "https://picsum.photos/seed/article/480/270",
+    folderId: "reading",
+    createdAt: "2026-07-15",
+  },
+  {
+    id: "7",
+    title: "React 19 새로운 기능",
+    url: "https://react.dev/blog",
+    description: "React 19에서 추가된 훅과 컴파일러 변화를 정리한 블로그.",
+    thumbnailUrl: "https://picsum.photos/seed/react19/480/270",
+    folderId: "dev",
+    createdAt: "2026-07-14",
+  },
+  {
+    id: "8",
+    title: "맛집 리스트",
+    url: "https://example.com/food",
+    description: "친구가 추천해준 동네 맛집 모음입니다.",
+    thumbnailUrl: "https://picsum.photos/seed/food/480/270",
+    folderId: "etc",
+    createdAt: "2026-07-13",
+  },
+];

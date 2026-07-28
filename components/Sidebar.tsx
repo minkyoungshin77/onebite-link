@@ -7,12 +7,14 @@ import { Folder } from "@/app/_lib/types";
 type SidebarProps = {
   folders: Folder[];
   totalCount: number;
+  onEditClick: (folder: Folder) => void;
   onDeleteClick: (folder: Folder) => void;
 };
 
 export default function Sidebar({
   folders,
   totalCount,
+  onEditClick,
   onDeleteClick,
 }: SidebarProps) {
   const pathname = usePathname();
@@ -49,6 +51,26 @@ export default function Sidebar({
                 >
                   <span className="truncate">{folder.name}</span>
                   <span className="flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      aria-label={`${folder.name} 폴더 수정`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        onEditClick(folder);
+                      }}
+                      className="hidden rounded p-1 text-[var(--text-sub)] hover:bg-[var(--border)] hover:text-[var(--text)] group-hover:block"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        className="h-3.5 w-3.5"
+                      >
+                        <path d="M17.414 2.586a2 2 0 0 0-2.828 0L13.5 3.672l3.828 3.828 1.086-1.086a2 2 0 0 0 0-2.828l-1-1Z" />
+                        <path d="M12.44 4.732 3 14.172V18h3.828l9.44-9.44-3.828-3.828Z" />
+                      </svg>
+                    </button>
                     <button
                       type="button"
                       aria-label={`${folder.name} 폴더 삭제`}

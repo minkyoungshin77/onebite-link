@@ -8,7 +8,7 @@ type LinkGridProps = {
 export default function LinkGrid({ links }: LinkGridProps) {
   if (links.length === 0) {
     return (
-      <p className="py-16 text-center text-sm text-zinc-400 dark:text-zinc-500">
+      <p className="py-16 text-center text-sm text-[var(--text-sub)]">
         등록된 링크가 없습니다.
       </p>
     );

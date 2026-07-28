@@ -6,45 +6,25 @@ import Sidebar from "./Sidebar";
 import NewFolderModal from "./NewFolderModal";
 import EditFolderModal from "./EditFolderModal";
 import DeleteFolderModal from "./DeleteFolderModal";
-import { folders as initialFolders, links } from "@/app/_lib/mock-data";
 import { Folder } from "@/app/_lib/types";
+import { LinksProvider } from "@/app/_lib/links-context";
+import { FoldersProvider, useFolders } from "@/app/_lib/folders-context";
 
 type AppShellProps = {
   children: React.ReactNode;
 };
 
-export default function AppShell({ children }: AppShellProps) {
-  const [folders, setFolders] = useState<Folder[]>(initialFolders);
+function AppShellInner({ children }: AppShellProps) {
+  const { addFolder, editFolder, deleteFolder } = useFolders();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [folderToEdit, setFolderToEdit] = useState<Folder | null>(null);
   const [folderToDelete, setFolderToDelete] = useState<Folder | null>(null);
-
-  const handleCreateFolder = (name: string) => {
-    const newFolder: Folder = {
-      id: `folder-${Date.now()}`,
-      name,
-      count: 0,
-    };
-    setFolders((prev) => [...prev, newFolder]);
-  };
-
-  const handleEditFolder = (folderId: string, name: string) => {
-    setFolders((prev) =>
-      prev.map((f) => (f.id === folderId ? { ...f, name } : f)),
-    );
-  };
-
-  const handleDeleteFolder = (folder: Folder) => {
-    setFolders((prev) => prev.filter((f) => f.id !== folder.id));
-  };
 
   return (
     <div className="flex min-h-screen flex-col bg-[var(--background)]">
       <Header onNewFolderClick={() => setIsModalOpen(true)} />
       <div className="flex flex-1">
         <Sidebar
-          folders={folders}
-          totalCount={links.length}
           onEditClick={setFolderToEdit}
           onDeleteClick={setFolderToDelete}
         />
@@ -54,7 +34,7 @@ export default function AppShell({ children }: AppShellProps) {
       {isModalOpen && (
         <NewFolderModal
           onClose={() => setIsModalOpen(false)}
-          onCreate={handleCreateFolder}
+          onCreate={addFolder}
         />
       )}
 
@@ -62,7 +42,7 @@ export default function AppShell({ children }: AppShellProps) {
         <EditFolderModal
           folder={folderToEdit}
           onClose={() => setFolderToEdit(null)}
-          onSave={handleEditFolder}
+          onSave={editFolder}
         />
       )}
 
@@ -70,9 +50,19 @@ export default function AppShell({ children }: AppShellProps) {
         <DeleteFolderModal
           folder={folderToDelete}
           onClose={() => setFolderToDelete(null)}
-          onConfirm={handleDeleteFolder}
+          onConfirm={deleteFolder}
         />
       )}
     </div>
+  );
+}
+
+export default function AppShell({ children }: AppShellProps) {
+  return (
+    <FoldersProvider>
+      <LinksProvider>
+        <AppShellInner>{children}</AppShellInner>
+      </LinksProvider>
+    </FoldersProvider>
   );
 }

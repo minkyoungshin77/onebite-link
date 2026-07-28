@@ -3,21 +3,21 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Folder } from "@/app/_lib/types";
+import { useLinks } from "@/app/_lib/links-context";
+import { useFolders } from "@/app/_lib/folders-context";
 
 type SidebarProps = {
-  folders: Folder[];
-  totalCount: number;
   onEditClick: (folder: Folder) => void;
   onDeleteClick: (folder: Folder) => void;
 };
 
 export default function Sidebar({
-  folders,
-  totalCount,
   onEditClick,
   onDeleteClick,
 }: SidebarProps) {
   const pathname = usePathname();
+  const { links } = useLinks();
+  const { folders } = useFolders();
 
   return (
     <aside className="w-56 shrink-0 border-r border-[var(--border)] px-3 py-6">
@@ -31,13 +31,18 @@ export default function Sidebar({
           }`}
         >
           <span>All</span>
-          <span className="text-xs text-[var(--text-sub)]">{totalCount}</span>
+          <span className="text-xs text-[var(--text-sub)]">
+            {links.length}
+          </span>
         </Link>
 
         <ul className="mt-4 flex flex-col gap-0.5">
           {folders.map((folder) => {
             const href = `/folder/${folder.id}`;
             const isActive = pathname === href;
+            const count = links.filter(
+              (link) => link.folderId === folder.id,
+            ).length;
 
             return (
               <li key={folder.id}>
@@ -95,7 +100,7 @@ export default function Sidebar({
                       </svg>
                     </button>
                     <span className="text-xs text-[var(--text-sub)]">
-                      {folder.count}
+                      {count}
                     </span>
                   </span>
                 </Link>

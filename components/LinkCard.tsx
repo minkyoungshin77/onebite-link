@@ -14,12 +14,15 @@ export default function LinkCard({ link }: LinkCardProps) {
       className="card-hover group flex flex-col overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--surface)]"
     >
       <div className="relative aspect-video w-full overflow-hidden bg-[var(--hover-bg)]">
-        <Image
-          src={link.thumbnailUrl}
-          alt={link.title}
-          fill
-          className="object-cover transition-transform group-hover:scale-105"
-        />
+        {link.thumbnailUrl && (
+          <Image
+            src={link.thumbnailUrl}
+            alt={link.title}
+            fill
+            sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+            className="object-cover transition-transform group-hover:scale-105"
+          />
+        )}
       </div>
       <div className="flex flex-col gap-1 p-4">
         <h3 className="truncate text-sm font-semibold text-[var(--text)]">

@@ -1,6 +1,4 @@
-import AppShell from "@/components/AppShell";
 import LinkGrid from "@/components/LinkGrid";
-import { links } from "../../_lib/mock-data";
 
 export default async function FolderPage({
   params,
@@ -8,11 +6,6 @@ export default async function FolderPage({
   params: Promise<{ folderId: string }>;
 }) {
   const { folderId } = await params;
-  const folderLinks = links.filter((link) => link.folderId === folderId);
 
-  return (
-    <AppShell>
-      <LinkGrid links={folderLinks} />
-    </AppShell>
-  );
+  return <LinkGrid folderId={folderId} />;
 }

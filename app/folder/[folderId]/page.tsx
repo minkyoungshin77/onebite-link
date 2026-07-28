@@ -1,5 +1,5 @@
-import AppShell from "../../_components/AppShell";
-import LinkGrid from "../../_components/LinkGrid";
+import AppShell from "@/components/AppShell";
+import LinkGrid from "@/components/LinkGrid";
 import { links } from "../../_lib/mock-data";
 
 export default async function FolderPage({

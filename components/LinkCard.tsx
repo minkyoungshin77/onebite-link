@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { LinkItem } from "../_lib/types";
+import { LinkItem } from "@/app/_lib/types";
 
 type LinkCardProps = {
   link: LinkItem;

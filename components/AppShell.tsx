@@ -1,6 +1,6 @@
 import Header from "./Header";
 import Sidebar from "./Sidebar";
-import { folders, links } from "../_lib/mock-data";
+import { folders, links } from "@/app/_lib/mock-data";
 
 type AppShellProps = {
   children: React.ReactNode;

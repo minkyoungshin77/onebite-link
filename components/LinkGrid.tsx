@@ -1,4 +1,4 @@
-import { LinkItem } from "../_lib/types";
+import { LinkItem } from "@/app/_lib/types";
 import LinkCard from "./LinkCard";
 
 type LinkGridProps = {

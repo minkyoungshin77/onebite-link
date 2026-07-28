@@ -1,6 +1,6 @@
 "use client";
 
-import { Folder } from "../_lib/types";
+import { Folder } from "@/app/_lib/types";
 
 type NewLinkFormProps = {
   folders: Folder[];

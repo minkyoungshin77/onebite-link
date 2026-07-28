@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Folder } from "../_lib/types";
+import { Folder } from "@/app/_lib/types";
 
 type SidebarProps = {
   folders: Folder[];

@@ -7,9 +7,14 @@ import { Folder } from "@/app/_lib/types";
 type SidebarProps = {
   folders: Folder[];
   totalCount: number;
+  onDeleteClick: (folder: Folder) => void;
 };
 
-export default function Sidebar({ folders, totalCount }: SidebarProps) {
+export default function Sidebar({
+  folders,
+  totalCount,
+  onDeleteClick,
+}: SidebarProps) {
   const pathname = usePathname();
 
   return (
@@ -36,15 +41,40 @@ export default function Sidebar({ folders, totalCount }: SidebarProps) {
               <li key={folder.id}>
                 <Link
                   href={href}
-                  className={`nav-item-hover flex w-full items-center justify-between rounded-md px-3 py-2 text-sm ${
+                  className={`nav-item-hover group flex w-full items-center justify-between rounded-md px-3 py-2 text-sm ${
                     isActive
                       ? "bg-[var(--hover-bg)] font-medium text-[var(--text)]"
                       : "text-[var(--text-sub)]"
                   }`}
                 >
-                  <span>{folder.name}</span>
-                  <span className="text-xs text-[var(--text-sub)]">
-                    {folder.count}
+                  <span className="truncate">{folder.name}</span>
+                  <span className="flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      aria-label={`${folder.name} 폴더 삭제`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        onDeleteClick(folder);
+                      }}
+                      className="hidden rounded p-1 text-[var(--text-sub)] hover:bg-[var(--border)] hover:text-[var(--error)] group-hover:block"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        className="h-3.5 w-3.5"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M8.75 1a.75.75 0 0 0-.75.75V3H4.5a.75.75 0 0 0 0 1.5h.322l.6 10.19A2 2 0 0 0 7.418 16.5h5.164a2 2 0 0 0 1.996-1.81l.6-10.19h.322a.75.75 0 0 0 0-1.5H12v-1.25a.75.75 0 0 0-.75-.75h-2.5ZM9.5 3V2.5h1V3h-1Zm-1.75 4a.75.75 0 0 1 .75.75v5.5a.75.75 0 0 1-1.5 0v-5.5a.75.75 0 0 1 .75-.75Zm3.5 0a.75.75 0 0 1 .75.75v5.5a.75.75 0 0 1-1.5 0v-5.5a.75.75 0 0 1 .75-.75Z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </button>
+                    <span className="text-xs text-[var(--text-sub)]">
+                      {folder.count}
+                    </span>
                   </span>
                 </Link>
               </li>

@@ -5,13 +5,15 @@ import { useLinks } from "@/app/_lib/links-context";
 import { LinkItem } from "@/app/_lib/types";
 import LinkCard from "./LinkCard";
 import DeleteLinkModal from "./DeleteLinkModal";
+import EditLinkModal from "./EditLinkModal";
 
 type LinkGridProps = {
   folderId?: string;
 };
 
 export default function LinkGrid({ folderId }: LinkGridProps) {
-  const { links: allLinks, deleteLink } = useLinks();
+  const { links: allLinks, editLink, deleteLink } = useLinks();
+  const [linkToEdit, setLinkToEdit] = useState<LinkItem | null>(null);
   const [linkToDelete, setLinkToDelete] = useState<LinkItem | null>(null);
   const links = folderId
     ? allLinks.filter((link) => link.folderId === folderId)
@@ -32,10 +34,19 @@ export default function LinkGrid({ folderId }: LinkGridProps) {
           <LinkCard
             key={link.id}
             link={link}
+            onEditClick={setLinkToEdit}
             onDeleteClick={setLinkToDelete}
           />
         ))}
       </div>
+
+      {linkToEdit && (
+        <EditLinkModal
+          link={linkToEdit}
+          onClose={() => setLinkToEdit(null)}
+          onSave={(linkId, input) => editLink(linkId, input)}
+        />
+      )}
 
       {linkToDelete && (
         <DeleteLinkModal

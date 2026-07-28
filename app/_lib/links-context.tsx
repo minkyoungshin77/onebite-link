@@ -12,9 +12,16 @@ type NewLinkInput = {
   folderId: string;
 };
 
+type EditLinkInput = {
+  folderId: string;
+  title: string;
+  description: string;
+};
+
 type LinksContextValue = {
   links: LinkItem[];
   addLink: (input: NewLinkInput) => void;
+  editLink: (linkId: string, input: EditLinkInput) => void;
   deleteLink: (linkId: string) => void;
 };
 
@@ -36,12 +43,29 @@ export function LinksProvider({ children }: { children: React.ReactNode }) {
     setLinks((prev) => [newLink, ...prev]);
   };
 
+  const editLink = (linkId: string, input: EditLinkInput) => {
+    setLinks((prev) =>
+      prev.map((link) =>
+        link.id === linkId
+          ? {
+              ...link,
+              folderId: input.folderId,
+              title: input.title,
+              description: input.description,
+            }
+          : link,
+      ),
+    );
+  };
+
   const deleteLink = (linkId: string) => {
     setLinks((prev) => prev.filter((link) => link.id !== linkId));
   };
 
   return (
-    <LinksContext.Provider value={{ links, addLink, deleteLink }}>
+    <LinksContext.Provider
+      value={{ links, addLink, editLink, deleteLink }}
+    >
       {children}
     </LinksContext.Provider>
   );

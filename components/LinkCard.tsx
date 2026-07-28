@@ -3,10 +3,15 @@ import { LinkItem } from "@/app/_lib/types";
 
 type LinkCardProps = {
   link: LinkItem;
+  onEditClick: (link: LinkItem) => void;
   onDeleteClick: (link: LinkItem) => void;
 };
 
-export default function LinkCard({ link, onDeleteClick }: LinkCardProps) {
+export default function LinkCard({
+  link,
+  onEditClick,
+  onDeleteClick,
+}: LinkCardProps) {
   return (
     <a
       href={link.url}
@@ -14,29 +19,50 @@ export default function LinkCard({ link, onDeleteClick }: LinkCardProps) {
       rel="noopener noreferrer"
       className="card-hover group relative flex flex-col overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--surface)]"
     >
-      <button
-        type="button"
-        aria-label={`${link.title} 링크 삭제`}
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          onDeleteClick(link);
-        }}
-        className="absolute right-2 top-2 z-10 hidden rounded p-1.5 bg-[var(--surface)]/90 text-[var(--text-sub)] hover:bg-[var(--border)] hover:text-[var(--error)] group-hover:block"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-          className="h-4 w-4"
+      <div className="absolute right-2 top-2 z-10 hidden gap-1 group-hover:flex">
+        <button
+          type="button"
+          aria-label={`${link.title} 링크 수정`}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onEditClick(link);
+          }}
+          className="rounded p-1.5 bg-[var(--surface)]/90 text-[var(--text-sub)] hover:bg-[var(--border)] hover:text-[var(--accent)]"
         >
-          <path
-            fillRule="evenodd"
-            d="M8.75 1a.75.75 0 0 0-.75.75V3H4.5a.75.75 0 0 0 0 1.5h.322l.6 10.19A2 2 0 0 0 7.418 16.5h5.164a2 2 0 0 0 1.996-1.81l.6-10.19h.322a.75.75 0 0 0 0-1.5H12v-1.25a.75.75 0 0 0-.75-.75h-2.5ZM9.5 3V2.5h1V3h-1Zm-1.75 4a.75.75 0 0 1 .75.75v5.5a.75.75 0 0 1-1.5 0v-5.5a.75.75 0 0 1 .75-.75Zm3.5 0a.75.75 0 0 1 .75.75v5.5a.75.75 0 0 1-1.5 0v-5.5a.75.75 0 0 1 .75-.75Z"
-            clipRule="evenodd"
-          />
-        </svg>
-      </button>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            className="h-4 w-4"
+          >
+            <path d="M13.586 3.586a2 2 0 1 1 2.828 2.828l-.793.793-2.828-2.828.793-.793ZM11.207 5.964 3 14.172V17h2.828l8.207-8.207-2.828-2.829Z" />
+          </svg>
+        </button>
+        <button
+          type="button"
+          aria-label={`${link.title} 링크 삭제`}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onDeleteClick(link);
+          }}
+          className="rounded p-1.5 bg-[var(--surface)]/90 text-[var(--text-sub)] hover:bg-[var(--border)] hover:text-[var(--error)]"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            className="h-4 w-4"
+          >
+            <path
+              fillRule="evenodd"
+              d="M8.75 1a.75.75 0 0 0-.75.75V3H4.5a.75.75 0 0 0 0 1.5h.322l.6 10.19A2 2 0 0 0 7.418 16.5h5.164a2 2 0 0 0 1.996-1.81l.6-10.19h.322a.75.75 0 0 0 0-1.5H12v-1.25a.75.75 0 0 0-.75-.75h-2.5ZM9.5 3V2.5h1V3h-1Zm-1.75 4a.75.75 0 0 1 .75.75v5.5a.75.75 0 0 1-1.5 0v-5.5a.75.75 0 0 1 .75-.75Zm3.5 0a.75.75 0 0 1 .75.75v5.5a.75.75 0 0 1-1.5 0v-5.5a.75.75 0 0 1 .75-.75Z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </button>
+      </div>
 
       <div className="relative aspect-video w-full overflow-hidden bg-[var(--hover-bg)]">
         {link.thumbnailUrl && (

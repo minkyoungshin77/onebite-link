@@ -5,7 +5,7 @@ import { LinkItem } from "@/app/_lib/types";
 type DeleteLinkModalProps = {
   link: LinkItem;
   onClose: () => void;
-  onConfirm: (link: LinkItem) => void;
+  onConfirm: (link: LinkItem) => Promise<void>;
 };
 
 export default function DeleteLinkModal({

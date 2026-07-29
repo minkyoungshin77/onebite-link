@@ -10,7 +10,7 @@ type EditLinkModalProps = {
   onSave: (
     linkId: string,
     input: { folderId: string; title: string; description: string },
-  ) => void;
+  ) => Promise<void>;
 };
 
 export default function EditLinkModal({

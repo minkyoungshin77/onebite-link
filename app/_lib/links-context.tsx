@@ -22,7 +22,7 @@ type LinksContextValue = {
   links: LinkItem[];
   isAddingLink: boolean;
   addLink: (input: NewLinkInput) => Promise<void>;
-  editLink: (linkId: string, input: EditLinkInput) => void;
+  editLink: (linkId: string, input: EditLinkInput) => Promise<void>;
   deleteLink: (linkId: string) => void;
 };
 
@@ -100,7 +100,22 @@ export function LinksProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const editLink = (linkId: string, input: EditLinkInput) => {
+  const editLink = async (linkId: string, input: EditLinkInput) => {
+    const supabase = createClient();
+    const { error } = await supabase
+      .from("link")
+      .update({
+        folder_id: Number(input.folderId),
+        title: input.title,
+        description: input.description,
+      })
+      .eq("id", Number(linkId));
+
+    if (error) {
+      console.error("링크를 수정하지 못했습니다.", error);
+      return;
+    }
+
     setLinks((prev) =>
       prev.map((link) =>
         link.id === linkId

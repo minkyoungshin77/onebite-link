@@ -15,7 +15,8 @@ type AppShellProps = {
 };
 
 function AppShellInner({ children }: AppShellProps) {
-  const { addFolder, editFolder, deleteFolder } = useFolders();
+  const { addFolder, editFolder, deleteFolder, isAddingFolder } =
+    useFolders();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [folderToEdit, setFolderToEdit] = useState<Folder | null>(null);
   const [folderToDelete, setFolderToDelete] = useState<Folder | null>(null);
@@ -35,6 +36,7 @@ function AppShellInner({ children }: AppShellProps) {
         <NewFolderModal
           onClose={() => setIsModalOpen(false)}
           onCreate={addFolder}
+          isCreating={isAddingFolder}
         />
       )}
 

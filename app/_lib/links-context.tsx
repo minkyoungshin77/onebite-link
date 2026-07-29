@@ -1,7 +1,7 @@
 "use client";
 
-import { createContext, useContext, useState } from "react";
-import { links as initialLinks } from "./mock-data";
+import { createContext, useContext, useEffect, useState } from "react";
+import { createClient } from "@/utils/supabase/client";
 import { LinkItem } from "./types";
 
 type NewLinkInput = {
@@ -20,7 +20,8 @@ type EditLinkInput = {
 
 type LinksContextValue = {
   links: LinkItem[];
-  addLink: (input: NewLinkInput) => void;
+  isAddingLink: boolean;
+  addLink: (input: NewLinkInput) => Promise<void>;
   editLink: (linkId: string, input: EditLinkInput) => void;
   deleteLink: (linkId: string) => void;
 };
@@ -28,19 +29,75 @@ type LinksContextValue = {
 const LinksContext = createContext<LinksContextValue | null>(null);
 
 export function LinksProvider({ children }: { children: React.ReactNode }) {
-  const [links, setLinks] = useState<LinkItem[]>(initialLinks);
+  const [links, setLinks] = useState<LinkItem[]>([]);
+  const [isAddingLink, setIsAddingLink] = useState(false);
 
-  const addLink = (input: NewLinkInput) => {
-    const newLink: LinkItem = {
-      id: `link-${Date.now()}`,
-      title: input.title,
-      url: input.url,
-      description: input.description,
-      thumbnailUrl: input.thumbnailUrl,
-      folderId: input.folderId,
-      createdAt: new Date().toISOString().slice(0, 10),
+  useEffect(() => {
+    const supabase = createClient();
+
+    const loadLinks = async () => {
+      const { data, error } = await supabase
+        .from("link")
+        .select("id, url, title, description, thumbnail_url, folder_id, created_at")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("링크 목록을 불러오지 못했습니다.", error);
+        return;
+      }
+
+      setLinks(
+        (data ?? []).map((row) => ({
+          id: String(row.id),
+          title: row.title ?? "",
+          url: row.url,
+          description: row.description ?? "",
+          thumbnailUrl: row.thumbnail_url ?? "",
+          folderId: row.folder_id === null ? "" : String(row.folder_id),
+          createdAt: row.created_at,
+        })),
+      );
     };
-    setLinks((prev) => [newLink, ...prev]);
+
+    loadLinks();
+  }, []);
+
+  const addLink = async (input: NewLinkInput) => {
+    if (isAddingLink) return;
+
+    setIsAddingLink(true);
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase
+        .from("link")
+        .insert({
+          url: input.url,
+          title: input.title,
+          description: input.description,
+          thumbnail_url: input.thumbnailUrl,
+          folder_id: Number(input.folderId),
+        })
+        .select("id, url, title, description, thumbnail_url, folder_id, created_at")
+        .single();
+
+      if (error || !data) {
+        console.error("링크를 추가하지 못했습니다.", error);
+        return;
+      }
+
+      const newLink: LinkItem = {
+        id: String(data.id),
+        title: data.title ?? "",
+        url: data.url,
+        description: data.description ?? "",
+        thumbnailUrl: data.thumbnail_url ?? "",
+        folderId: data.folder_id === null ? "" : String(data.folder_id),
+        createdAt: data.created_at,
+      };
+      setLinks((prev) => [newLink, ...prev]);
+    } finally {
+      setIsAddingLink(false);
+    }
   };
 
   const editLink = (linkId: string, input: EditLinkInput) => {
@@ -64,7 +121,7 @@ export function LinksProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <LinksContext.Provider
-      value={{ links, addLink, editLink, deleteLink }}
+      value={{ links, isAddingLink, addLink, editLink, deleteLink }}
     >
       {children}
     </LinksContext.Provider>

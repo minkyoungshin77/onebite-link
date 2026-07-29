@@ -7,7 +7,7 @@ import { useFolders } from "@/app/_lib/folders-context";
 
 export default function NewLinkForm() {
   const router = useRouter();
-  const { addLink } = useLinks();
+  const { addLink, isAddingLink } = useLinks();
   const { folders } = useFolders();
   const [url, setUrl] = useState("");
   const [folderId, setFolderId] = useState("");
@@ -16,6 +16,7 @@ export default function NewLinkForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting || isAddingLink) return;
     setError("");
 
     if (!url.trim()) {
@@ -39,7 +40,7 @@ export default function NewLinkForm() {
         return;
       }
 
-      addLink({
+      await addLink({
         url: data.url,
         title: data.title,
         description: data.description,
@@ -104,10 +105,10 @@ export default function NewLinkForm() {
 
       <button
         type="submit"
-        disabled={isSubmitting}
+        disabled={isSubmitting || isAddingLink}
         className="mt-2 self-start rounded-md bg-[var(--accent)] px-5 py-2 text-sm font-medium text-white hover:bg-[var(--accent-hover)] disabled:cursor-not-allowed disabled:opacity-40"
       >
-        {isSubmitting ? "확인 중..." : "확인"}
+        {isSubmitting || isAddingLink ? "확인 중..." : "확인"}
       </button>
     </form>
   );

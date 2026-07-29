@@ -9,7 +9,7 @@ type FoldersContextValue = {
   isAddingFolder: boolean;
   addFolder: (name: string) => Promise<void>;
   editFolder: (folderId: string, name: string) => Promise<void>;
-  deleteFolder: (folder: Folder) => void;
+  deleteFolder: (folder: Folder) => Promise<void>;
 };
 
 const FoldersContext = createContext<FoldersContextValue | null>(null);
@@ -89,7 +89,18 @@ export function FoldersProvider({ children }: { children: React.ReactNode }) {
     );
   };
 
-  const deleteFolder = (folder: Folder) => {
+  const deleteFolder = async (folder: Folder) => {
+    const supabase = createClient();
+    const { error } = await supabase
+      .from("folder")
+      .delete()
+      .eq("id", Number(folder.id));
+
+    if (error) {
+      console.error("폴더를 삭제하지 못했습니다.", error);
+      return;
+    }
+
     setFolders((prev) => prev.filter((f) => f.id !== folder.id));
   };
 

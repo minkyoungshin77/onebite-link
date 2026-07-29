@@ -5,7 +5,7 @@ import { Folder } from "@/app/_lib/types";
 type DeleteFolderModalProps = {
   folder: Folder;
   onClose: () => void;
-  onConfirm: (folder: Folder) => void;
+  onConfirm: (folder: Folder) => Promise<void>;
 };
 
 export default function DeleteFolderModal({

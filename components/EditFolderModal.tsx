@@ -6,7 +6,7 @@ import { Folder } from "@/app/_lib/types";
 type EditFolderModalProps = {
   folder: Folder;
   onClose: () => void;
-  onSave: (folderId: string, name: string) => void;
+  onSave: (folderId: string, name: string) => Promise<void>;
 };
 
 export default function EditFolderModal({

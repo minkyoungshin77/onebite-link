@@ -8,7 +8,7 @@ type FoldersContextValue = {
   folders: Folder[];
   isAddingFolder: boolean;
   addFolder: (name: string) => Promise<void>;
-  editFolder: (folderId: string, name: string) => void;
+  editFolder: (folderId: string, name: string) => Promise<void>;
   deleteFolder: (folder: Folder) => void;
 };
 
@@ -72,7 +72,18 @@ export function FoldersProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const editFolder = (folderId: string, name: string) => {
+  const editFolder = async (folderId: string, name: string) => {
+    const supabase = createClient();
+    const { error } = await supabase
+      .from("folder")
+      .update({ name })
+      .eq("id", Number(folderId));
+
+    if (error) {
+      console.error("폴더 이름을 수정하지 못했습니다.", error);
+      return;
+    }
+
     setFolders((prev) =>
       prev.map((f) => (f.id === folderId ? { ...f, name } : f)),
     );

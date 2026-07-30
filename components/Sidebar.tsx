@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Folder } from "@/app/_lib/types";
 import { useLinks } from "@/app/_lib/links-context";
 import { useFolders } from "@/app/_lib/folders-context";
+import { createClient } from "@/utils/supabase/client";
 
 type SidebarProps = {
   onEditClick: (folder: Folder) => void;
@@ -16,11 +17,18 @@ export default function Sidebar({
   onDeleteClick,
 }: SidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const { links } = useLinks();
   const { folders } = useFolders();
 
+  const handleLogout = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push("/login");
+  };
+
   return (
-    <aside className="w-56 shrink-0 border-r border-[var(--border)] px-3 py-6">
+    <aside className="flex w-56 shrink-0 flex-col border-r border-[var(--border)] px-3 py-6">
       <nav className="flex flex-col gap-0.5">
         <Link
           href="/"
@@ -109,6 +117,14 @@ export default function Sidebar({
           })}
         </ul>
       </nav>
+
+      <button
+        type="button"
+        onClick={handleLogout}
+        className="nav-item-hover mt-auto flex items-center rounded-md px-3 py-2 text-left text-sm font-medium text-[var(--text-sub)]"
+      >
+        로그아웃
+      </button>
     </aside>
   );
 }

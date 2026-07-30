@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import NewFolderModal from "./NewFolderModal";
@@ -14,12 +15,19 @@ type AppShellProps = {
   children: React.ReactNode;
 };
 
+const NO_SHELL_ROUTES = ["/login", "/signup"];
+
 function AppShellInner({ children }: AppShellProps) {
+  const pathname = usePathname();
   const { addFolder, editFolder, deleteFolder, isAddingFolder } =
     useFolders();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [folderToEdit, setFolderToEdit] = useState<Folder | null>(null);
   const [folderToDelete, setFolderToDelete] = useState<Folder | null>(null);
+
+  if (NO_SHELL_ROUTES.includes(pathname)) {
+    return <>{children}</>;
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-[var(--background)]">

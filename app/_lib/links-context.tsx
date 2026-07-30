@@ -34,11 +34,13 @@ export function LinksProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const supabase = createClient();
+    let lastUserId: string | null = null;
 
-    const loadLinks = async () => {
+    const loadLinks = async (userId: string) => {
       const { data, error } = await supabase
         .from("link")
         .select("id, url, title, description, thumbnail_url, folder_id, created_at")
+        .eq("user_id", userId)
         .order("created_at", { ascending: false });
 
       if (error) {
@@ -59,7 +61,21 @@ export function LinksProvider({ children }: { children: React.ReactNode }) {
       );
     };
 
-    loadLinks();
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      const userId = session?.user.id ?? null;
+      if (userId === lastUserId) return;
+
+      lastUserId = userId;
+      if (userId) {
+        loadLinks(userId);
+      } else {
+        setLinks([]);
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const addLink = async (input: NewLinkInput) => {

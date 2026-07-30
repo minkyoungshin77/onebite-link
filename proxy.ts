@@ -1,7 +1,7 @@
 import { type NextRequest } from "next/server";
 import { createClient } from "@/utils/supabase/proxy";
 
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   return createClient(request);
 }
 

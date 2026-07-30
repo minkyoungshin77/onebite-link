@@ -2,14 +2,47 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/utils/supabase/client";
+import Toast from "./Toast";
 
 export default function SignupForm() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const isFormFilled =
+    email.trim() !== "" &&
+    password.trim() !== "" &&
+    passwordConfirm.trim() !== "";
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting || !isFormFilled) return;
+
+    if (password !== passwordConfirm) {
+      setErrorMessage("비밀번호가 일치하지 않습니다.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    setErrorMessage("");
+    try {
+      const supabase = createClient();
+      const { error } = await supabase.auth.signUp({ email, password });
+
+      if (error) {
+        setErrorMessage("회원가입에 실패했습니다. 다시 시도해주세요.");
+        return;
+      }
+
+      router.push("/");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -76,9 +109,10 @@ export default function SignupForm() {
 
           <button
             type="submit"
-            className="mt-2 rounded-md bg-[var(--accent)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--accent-hover)]"
+            disabled={!isFormFilled || isSubmitting}
+            className="mt-2 rounded-md bg-[var(--accent)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--accent-hover)] disabled:cursor-not-allowed disabled:opacity-40"
           >
-            회원가입
+            {isSubmitting ? "가입 중..." : "회원가입"}
           </button>
         </form>
 
@@ -89,6 +123,10 @@ export default function SignupForm() {
           </Link>
         </p>
       </div>
+
+      {errorMessage && (
+        <Toast message={errorMessage} onClose={() => setErrorMessage("")} />
+      )}
     </div>
   );
 }

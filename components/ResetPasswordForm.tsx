@@ -1,35 +1,37 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import Toast from "./Toast";
 
-export default function LoginForm() {
+export default function ResetPasswordForm() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const isFormFilled = email.trim() !== "" && password.trim() !== "";
+  const isFormFilled =
+    password.trim() !== "" && passwordConfirm.trim() !== "";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isSubmitting || !isFormFilled) return;
 
+    if (password !== passwordConfirm) {
+      setErrorMessage("비밀번호가 일치하지 않습니다.");
+      return;
+    }
+
     setIsSubmitting(true);
     setErrorMessage("");
     try {
       const supabase = createClient();
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      const { error } = await supabase.auth.updateUser({ password });
 
       if (error) {
-        setErrorMessage("이메일 또는 비밀번호가 올바르지 않습니다.");
+        setErrorMessage("비밀번호 재설정에 실패했습니다. 다시 시도해주세요.");
         return;
       }
 
@@ -49,28 +51,10 @@ export default function LoginForm() {
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
             <label
-              htmlFor="email"
-              className="text-sm font-medium text-[var(--text)]"
-            >
-              이메일
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              className="rounded-md border border-[var(--border)] px-3 py-2 text-base text-[var(--text)] outline-none placeholder:text-[var(--placeholder)] focus:border-[var(--accent)]"
-            />
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label
               htmlFor="password"
               className="text-sm font-medium text-[var(--text)]"
             >
-              비밀번호
+              새 비밀번호
             </label>
             <input
               id="password"
@@ -78,7 +62,25 @@ export default function LoginForm() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="비밀번호를 입력해주세요"
+              placeholder="새 비밀번호를 입력해주세요"
+              className="rounded-md border border-[var(--border)] px-3 py-2 text-base text-[var(--text)] outline-none placeholder:text-[var(--placeholder)] focus:border-[var(--accent)]"
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label
+              htmlFor="passwordConfirm"
+              className="text-sm font-medium text-[var(--text)]"
+            >
+              새 비밀번호 확인
+            </label>
+            <input
+              id="passwordConfirm"
+              name="passwordConfirm"
+              type="password"
+              value={passwordConfirm}
+              onChange={(e) => setPasswordConfirm(e.target.value)}
+              placeholder="새 비밀번호를 다시 입력해주세요"
               className="rounded-md border border-[var(--border)] px-3 py-2 text-base text-[var(--text)] outline-none placeholder:text-[var(--placeholder)] focus:border-[var(--accent)]"
             />
           </div>
@@ -88,28 +90,9 @@ export default function LoginForm() {
             disabled={!isFormFilled || isSubmitting}
             className="mt-2 rounded-md bg-[var(--accent)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--accent-hover)] disabled:cursor-not-allowed disabled:opacity-40"
           >
-            {isSubmitting ? "로그인 중..." : "로그인"}
+            {isSubmitting ? "변경 중..." : "비밀번호 변경"}
           </button>
         </form>
-
-        <p className="mt-6 text-center text-sm text-[var(--text-sub)]">
-          <Link
-            href="/forgot-password"
-            className="text-[var(--accent)] hover:underline"
-          >
-            비밀번호 찾기
-          </Link>
-        </p>
-
-        <p className="mt-2 text-center text-sm text-[var(--text-sub)]">
-          아직 계정이 없으신가요?{" "}
-          <Link
-            href="/signup"
-            className="text-[var(--accent)] hover:underline"
-          >
-            회원가입
-          </Link>
-        </p>
       </div>
 
       {errorMessage && (

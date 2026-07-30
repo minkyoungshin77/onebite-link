@@ -15,7 +15,7 @@ type AppShellProps = {
   children: React.ReactNode;
 };
 
-const NO_SHELL_ROUTES = ["/login", "/signup"];
+const NO_SHELL_ROUTES = ["/login", "/signup", "/forgot-password", "/reset-password"];
 
 function AppShellInner({ children }: AppShellProps) {
   const pathname = usePathname();
